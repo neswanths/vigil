@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+groq==0.33.0
+cerebras_cloud_sdk==1.29.0
+httpx
+upstash-redis
+supabase==2.5.1
+langgraph
+pydantic

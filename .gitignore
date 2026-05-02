@@ -1,0 +1,35 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak
+env.destination
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.prototxt
+*.pickle
+
+# Node
+node_modules/
+dist/
+build/
+.eslintcache
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
