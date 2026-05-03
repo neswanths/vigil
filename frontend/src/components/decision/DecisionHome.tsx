@@ -29,8 +29,8 @@ export default function DecisionHome() {
   const supportingInsights = primary
     ? insights.filter((insight) => primary.supporting_insight_ids.includes(insight.id)).slice(0, 3)
     : insights.slice(0, 3);
-  const latestSignals = signals.slice(0, 3);
   const liveSignals = signals.filter((signal) => !isFallbackSignal(signal.source_name, signal.source_url));
+  const latestSignals = liveSignals.slice(0, 3);
   const lowEvidence = Boolean(primary && (primary.confidence < 0.48 || liveSignals.length === 0));
 
   return (
@@ -172,7 +172,9 @@ export default function DecisionHome() {
               <h3 className="text-lg font-semibold text-gray-900">Latest signals</h3>
             </div>
             {latestSignals.length === 0 ? (
-              <p className="text-sm text-gray-500">Waiting for market signals.</p>
+              <p className="text-sm leading-6 text-gray-500">
+                No live market signals were accepted. Weak or off-domain articles were filtered out, so this answer is marked as structured low-evidence reasoning.
+              </p>
             ) : (
               <div className="space-y-3">
                 {latestSignals.map((signal) => (

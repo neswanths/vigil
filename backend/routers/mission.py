@@ -32,11 +32,14 @@ async def run_mission_task(mission: Mission):
 
         try:
             if signals:
-                supabase.table("signals").upsert(signals).execute()
+                res = supabase.table("signals").upsert(signals).execute()
+                logger.info("supabase_signals_upsert_body mission_id=%s body=%s", mission.id, str(res.data)[:2500])
             if insights:
-                supabase.table("insights").upsert(insights).execute()
+                res = supabase.table("insights").upsert(insights).execute()
+                logger.info("supabase_insights_upsert_body mission_id=%s body=%s", mission.id, str(res.data)[:2500])
             if recommendations:
-                supabase.table("recommendations").upsert(recommendations).execute()
+                res = supabase.table("recommendations").upsert(recommendations).execute()
+                logger.info("supabase_recommendations_upsert_body mission_id=%s body=%s", mission.id, str(res.data)[:2500])
         except Exception as e:
             logger.error(f"DB save error: {e}")
         return {
@@ -82,7 +85,8 @@ async def start_mission(mission_data: dict):
         created_at=datetime.now(timezone.utc)
     )
     
-    supabase.table("missions").insert(mission.model_dump(mode="json")).execute()
+    mission_res = supabase.table("missions").insert(mission.model_dump(mode="json")).execute()
+    logger.info("supabase_mission_insert_body mission_id=%s body=%s", mission.id, str(mission_res.data)[:2500])
     result = await run_mission_task(mission)
     
     return {

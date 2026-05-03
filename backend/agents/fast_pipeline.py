@@ -23,6 +23,7 @@ from backend.agents.fault_tolerance import (
     safe_str,
     sanitize_recommendation,
 )
+from backend.agents.smartphone_priors import build_smartphone_reasoning_context
 from backend.config import config
 from backend.models.schemas import Insight, Mission, Recommendation, Signal
 
@@ -97,6 +98,7 @@ async def _fetch_signals(mission: Mission, context: DomainContext, started: floa
                 params={"apiKey": config["CURRENTS_API_KEY"], "keywords": query, "limit": MAX_SIGNALS},
             )
             data = response.json()
+            logger.info("currents_response_body mission_id=%s query=%r body=%s", mission.id, query, _short_body(data))
     except Exception as error:
         logger.warning("fast_signal_fetch_failed: %s", error)
         return []
@@ -144,11 +146,21 @@ async def _reason_once(mission: Mission, signals: list[Signal], started: float) 
         return _fallback_reasoning(mission, signals)
 
     client = AsyncGroq(api_key=config["GROQ_API_KEY"])
-    signal_text = "\n".join(
-        f"{idx}. {signal.raw_summary} | source={signal.source_name} | relevance={signal.relevance_score}"
-        for idx, signal in enumerate(signals)
-    )
     evidence_mode = "live" if _has_live_evidence(signals) else "low"
+    if evidence_mode == "low":
+        signal_text = "No accepted live market signals. The fallback status is not evidence and must not be cited or paraphrased."
+    else:
+        signal_text = "\n".join(
+            f"{idx}. {signal.raw_summary} | source={signal.source_name} | relevance={signal.relevance_score}"
+            for idx, signal in enumerate(signals)
+        )
+    context = build_domain_context(mission.raw_input, mission.industry, mission.competitors)
+    structured_context = build_smartphone_reasoning_context(context) if evidence_mode == "low" else ""
+    final_instruction = (
+        "Generate insights and recommendations. Reason beyond the mission text using the structured context: identify non-obvious tradeoffs, risks, and competitive implications. Never restate or paraphrase what the user already said."
+        if evidence_mode == "low"
+        else "Generate insights and recommendations."
+    )
     prompt = f"""Mission:
 {mission.raw_input}
 
@@ -156,10 +168,14 @@ Industry: {mission.industry}
 Competitors: {', '.join(mission.competitors)}
 Evidence mode: {evidence_mode}
 
+{structured_context}
+
 Signals:
 {signal_text}
 
-Generate insights and recommendations."""
+{final_instruction}"""
+    if evidence_mode == "low":
+        logger.info("groq_low_evidence_prompt mission_id=%s prompt=%s", mission.id, prompt)
 
     try:
         response = await asyncio.wait_for(
@@ -174,7 +190,9 @@ Generate insights and recommendations."""
             ),
             timeout=max(1.0, min(5.0, remaining - 0.5)),
         )
-        parsed = parse_agent_response(response.choices[0].message.content, "Fast Mode")
+        raw_llm_body = response.choices[0].message.content
+        logger.info("groq_response_body mission_id=%s body=%s", mission.id, _short_body(raw_llm_body))
+        parsed = parse_agent_response(raw_llm_body, "Fast Mode")
         return _build_outputs(mission, signals, parsed)
     except Exception as error:
         logger.warning("fast_reasoning_failed: %s", error)
@@ -343,10 +361,7 @@ def _supporting_signal_ids(text: str, signals: list[Signal], allow_fallback: boo
 
 
 def _transform_body(body: str, mission: Mission, signals: list[Signal], low_evidence: bool) -> str:
-    mission_words = set(canonicalize_summary(mission.raw_input).split())
-    body_words = set(canonicalize_summary(body).split())
-    overlap = len(mission_words & body_words) / max(1, len(body_words))
-    if not body or overlap > 0.75:
+    if not body:
         if low_evidence:
             return _fallback_reasoning(mission, signals)[0][0].body
         return f"Live evidence changes the decision by pointing to {signals[0].raw_summary[:180]} as the constraint to price and positioning."
@@ -360,6 +375,13 @@ def _low_evidence_text(value: str) -> str:
     if value.lower().startswith("low evidence"):
         return value
     return f"Low evidence: {value}" if value else "Low evidence: structured reasoning used because strong live signals were unavailable."
+
+
+def _short_body(value: Any, limit: int = 2500) -> str:
+    text = safe_str(value)
+    if not text:
+        text = repr(value)
+    return text[:limit]
 
 
 def _parse_datetime(value: Any) -> datetime:

@@ -1,9 +1,17 @@
 import { X, GitBranch, ShieldCheck, BarChart2, AlertTriangle, TrendingUp, TrendingDown, CheckCircle } from 'lucide-react';
 import { useVigilStore } from '../../store/vigilStore';
-import type { Insight, Recommendation } from '../../store/vigilStore';
+import type { Insight, Recommendation, Signal } from '../../store/vigilStore';
 
 function isInsight(c: Insight | Recommendation): c is Insight {
   return 'body' in c;
+}
+
+function isSignal(value: Signal | undefined): value is Signal {
+  return Boolean(value);
+}
+
+function isKnownInsight(value: Insight | undefined): value is Insight {
+  return Boolean(value);
 }
 
 function Bar({ value, color = '#10b981' }: { value: number; color?: string }) {
@@ -34,8 +42,22 @@ function Step({ icon, label, children }: { icon: React.ReactNode; label: string;
 export default function ReasoningDrawer() {
   const { isOpen, content, type } = useVigilStore((s) => s.reasoningDrawer);
   const closeReasoningDrawer = useVigilStore((s) => s.closeReasoningDrawer);
+  const insights = useVigilStore((s) => s.insights);
+  const signals = useVigilStore((s) => s.signals);
 
   if (!isOpen || !content) return null;
+
+  const signalById = new Map(signals.map((signal) => [signal.id, signal]));
+  const insightById = new Map(insights.map((insight) => [insight.id, insight]));
+  const supportedSignals = isInsight(content)
+    ? content.supporting_signals
+      .map((id) => signalById.get(id))
+      .filter(isSignal)
+      .filter((signal) => signal.source_name !== 'Structured Fallback' && signal.source_url)
+    : [];
+  const supportingBeliefs = !isInsight(content)
+    ? content.supporting_insight_ids.map((id) => insightById.get(id)).filter(isKnownInsight)
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -54,12 +76,20 @@ export default function ReasoningDrawer() {
           {type === 'insight' && isInsight(content) && (
             <>
               <Step icon={<GitBranch size={13} color="#10b981" />} label="Market evidence">
-                <p className="text-sm text-gray-900">
-                  {content.supporting_signals.length} supporting signal{content.supporting_signals.length !== 1 ? 's' : ''}
-                </p>
-                {content.supporting_signals.map((id) => (
-                  <span key={id} className="inline-block mr-1 mt-1 px-2 py-0.5 bg-gray-50 border border-gray-200 rounded text-xs text-gray-500">{id}</span>
-                ))}
+                {supportedSignals.length === 0 ? (
+                    <p className="text-sm leading-6 text-gray-500">
+                      No live market signal supports this belief. It is based on structured low-evidence reasoning.
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {supportedSignals.map((signal) => (
+                        <div key={signal.id} className="rounded-lg border border-gray-200 bg-gray-50 p-2">
+                          <p className="text-xs leading-5 text-gray-900">{signal.raw_summary}</p>
+                          <p className="mt-1 text-xs text-gray-500">{signal.source_name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
               </Step>
 
               <Step icon={<ShieldCheck size={13} color="#10b981" />} label="Evidence strength">
@@ -112,10 +142,16 @@ export default function ReasoningDrawer() {
               <p className="text-xs text-gray-500 mb-4 leading-relaxed">{content.rationale}</p>
 
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Supporting beliefs</p>
-              <div className="flex flex-wrap gap-1 mb-4">
-                {content.supporting_insight_ids.map((id) => (
-                  <span key={id} className="px-2 py-0.5 bg-emerald-50 border border-emerald-500 rounded text-xs text-emerald-600">{id}</span>
+              <div className="space-y-2 mb-4">
+                {supportingBeliefs.map((insight) => (
+                  <div key={insight.id} className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                    <p className="mb-1 text-xs font-semibold text-gray-900">{insight.title}</p>
+                    <p className="text-xs leading-5 text-gray-500">{insight.body}</p>
+                  </div>
                 ))}
+                {supportingBeliefs.length === 0 && (
+                  <p className="text-xs leading-5 text-gray-500">No supporting belief details are available for this action.</p>
+                )}
               </div>
 
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Assumptions</p>
