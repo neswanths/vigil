@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Layers, Bot, Radio, GitBranch, ShieldCheck, Zap, Eye, Target } from 'lucide-react';
 
 const SIGNALS = [
-  { type: 'competitor_move', summary: 'Beardo launches sulphate-free beard wash at Rs 299 undercutting mid-market segment', confidence: 0.91 },
-  { type: 'market_trend', summary: "Men's grooming category grows 34 percent in Tier 2 cities driven by social commerce", confidence: 0.87 },
-  { type: 'pricing', summary: 'Man Arden revises moisturiser pricing down 18 percent ahead of Q3 festive season', confidence: 0.83 },
+  { type: 'competitor_move', summary: 'Competitor X launches a lower-priced alternative that undercuts the mid-market segment', confidence: 0.91 },
+  { type: 'market_trend', summary: 'Category demand shifts toward value-led products as buyers compare price and perceived quality', confidence: 0.87 },
+  { type: 'pricing', summary: 'Brand Y revises pricing ahead of a seasonal launch window, increasing pressure on margins', confidence: 0.83 },
 ];
 
 const TYPE_STYLES: Record<string, { bg: string; color: string }> = {
@@ -50,8 +50,8 @@ export default function Landing() {
 
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 pt-8 pb-20">
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-4 max-w-4xl">
-          Your market never sleeps.{' '}
-          <span className="text-emerald-600">Neither does Vigil.</span>
+          Market never sleeps.{' '}
+          <span className="whitespace-nowrap text-emerald-600">Neither does Vigil!</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-xl mb-12">
           Autonomous AI agents that continuously scan, synthesize, and recommend so you act before threats become problems.

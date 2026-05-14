@@ -47,16 +47,16 @@ export default function Onboarding() {
         {phase === 'input' ? (
           <>
             <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-              What market are you navigating?
+              What market decision are you making?
             </h1>
             <p className="text-gray-500 text-sm text-center mb-8">
-              Describe your situation, your industry, your competitors, and the decision you are trying to make in the next 30 days.
+              Describe your company, product, market, competitors, and the decision you need to make.
             </p>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={5}
-              placeholder="Example: We are a D2C men's skincare brand deciding whether to launch a beard care range in Q3, competing with Beardo and Man Arden."
+              placeholder="Example: We are X company launching Y product in Z market. Competitors include A, B, and C. Should we choose option 1 for volume or option 2 for better margins? Consider pricing pressure, customer perception, and competitor response."
               className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900 text-sm placeholder-[#9ca3af] resize-none focus:outline-none focus:border-emerald-500 transition-colors"
             />
             {error && (
