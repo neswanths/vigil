@@ -132,6 +132,8 @@ Set `MOCK_MODE=true` to run without live API calls.
 ---
 
 ## Project Structure
+'''
+
 vigil/
 ├── backend/
 │   ├── agents/
@@ -156,6 +158,7 @@ vigil/
 └── README.md
 
 ---
+'''
 
 ## Current Status
 
