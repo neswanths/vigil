@@ -9,7 +9,9 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/onboard" element={<Onboarding />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/scan" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

@@ -19,16 +19,16 @@ function stateText(state: StepState) {
 }
 
 function stateColor(state: StepState) {
-  if (state === 'processing' || state === 'complete') return '#10b981';
-  if (state === 'blocked') return '#f59e0b';
-  return '#6b7280';
+  if (state === 'processing' || state === 'blocked') return '#B45309';
+  if (state === 'complete') return '#014421';
+  return '#4A6741';
 }
 
 function StateIcon({ state }: { state: StepState }) {
-  if (state === 'processing') return <Loader2 size={15} color="#10b981" className="animate-spin" />;
-  if (state === 'complete') return <CheckCircle size={15} color="#10b981" />;
-  if (state === 'blocked') return <ShieldCheck size={15} color="#f59e0b" />;
-  return <Circle size={15} color="#6b7280" />;
+  if (state === 'processing') return <Loader2 size={15} className="animate-spin text-[#B45309]" />;
+  if (state === 'complete') return <CheckCircle size={15} className="text-[#014421]" />;
+  if (state === 'blocked') return <ShieldCheck size={15} className="text-[#B45309]" />;
+  return <Circle size={15} className="text-[#4A6741]" />;
 }
 
 export default function AgentPipeline() {
@@ -76,12 +76,13 @@ export default function AgentPipeline() {
 
   return (
     <div className="h-full overflow-y-auto p-4">
-      <div className="mb-5 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mb-5 rounded-lg border border-[#D6E8B0] bg-[#F2F9E0] p-4">
         <div className="mb-2 flex items-center gap-2">
-          <Radio size={15} color="#10b981" />
-          <span className="text-sm font-semibold text-gray-900">Live state</span>
+          <span className="h-2 w-2 animate-pulse rounded-full bg-[#86EFAC]" />
+          <Radio size={15} className="text-[#014421]" />
+          <span className="text-sm font-semibold text-[#012B15]">Live state</span>
         </div>
-        <p className="text-sm leading-6 text-gray-500">
+        <p className="text-sm leading-6 text-[#4A6741]">
           Vigil stays quiet until something changes. Active steps pulse; completed steps hold steady.
         </p>
       </div>
@@ -92,29 +93,29 @@ export default function AgentPipeline() {
           const handoffActive = step.state === 'complete' && next?.state === 'processing';
           return (
             <div key={step.label}>
-              <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="rounded-lg border border-[#D6E8B0] bg-[#F2F9E0] p-4">
                 <div className="flex items-start gap-3">
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border"
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${step.state === 'processing' ? 'animate-pulse' : ''}`}
                     style={{ borderColor: stateColor(step.state) }}
                   >
                     <StateIcon state={step.state} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-center justify-between gap-3">
-                      <h3 className="text-sm font-semibold text-gray-900">{step.label}</h3>
-                      <span className="text-xs font-semibold uppercase" style={{ color: stateColor(step.state) }}>
+                      <h3 className="text-sm font-semibold text-[#012B15]">{step.label}</h3>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${step.state === 'complete' ? 'bg-[#014421] text-[#FAF7F2]' : ''}`} style={{ color: step.state === 'complete' ? undefined : stateColor(step.state) }}>
                         {stateText(step.state)}
                       </span>
                     </div>
-                    <p className="text-sm leading-5 text-gray-500">{step.detail}</p>
-                    <p className="mt-2 text-xs text-gray-500">{step.count} item{step.count === 1 ? '' : 's'} passed forward</p>
+                    <p className="text-xs leading-5 text-[#4A6741]">{step.detail}</p>
+                    <p className="mt-2 text-xs text-[#4A6741]">{step.count} item{step.count === 1 ? '' : 's'} passed forward</p>
                   </div>
                 </div>
               </div>
               {index < steps.length - 1 && (
                 <div className="flex h-8 justify-center">
-                  <div className={`w-px bg-[#e5e7eb] ${handoffActive ? 'animate-pulse' : ''}`} />
+                  <div className={`w-px bg-[#D6E8B0] ${handoffActive ? 'animate-pulse' : ''}`} />
                 </div>
               )}
             </div>
@@ -122,12 +123,12 @@ export default function AgentPipeline() {
         })}
       </div>
 
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-4">
+      <div className="mt-5 rounded-lg bg-[#014421] p-3 text-[#FAF7F2]">
         <div className="flex items-center gap-2">
-          <Activity size={15} color="#10b981" />
-          <span className="text-sm text-gray-900">Current output</span>
+          <Activity size={15} />
+          <span className="text-xs font-semibold uppercase tracking-wider">Current output</span>
         </div>
-        <p className="mt-2 text-sm leading-6 text-gray-500">
+        <p className="mt-2 text-xs leading-5 text-[#FAF7F2]/85">
           {recommendations.length > 0
             ? `${recommendations.length} recommended action${recommendations.length === 1 ? '' : 's'} ready.`
             : insights.length > 0

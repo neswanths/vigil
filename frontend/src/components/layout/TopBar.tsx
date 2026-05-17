@@ -12,25 +12,26 @@ export default function TopBar({ onToggleVisualizer }: Props) {
     : 'No active mission';
 
   return (
-    <div className="h-14 bg-white border-b border-gray-200 flex items-center px-6 gap-4 shrink-0">
+    <div className="flex h-14 shrink-0 items-center gap-4 bg-[#014421] px-4 sm:px-6">
       <div className="flex items-center gap-2">
-        <Layers size={18} color="#10b981" />
-        <span className="font-bold text-emerald-600 text-sm">Vigil</span>
+        <Layers size={18} className="text-[#FAF7F2]" />
+        <span className="text-sm font-bold text-[#FAF7F2]">Vigil</span>
       </div>
-      <div className="flex-1 text-center">
-        <span className="text-gray-500 text-xs">{summary}</span>
+      <div className="min-w-0 flex-1 text-center">
+        <span className="block truncate text-xs text-[#FAF7F2]/70">{summary}</span>
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-emerald-600 text-xs">Live</span>
+        <div className="hidden items-center gap-1.5 sm:flex">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#86EFAC]" />
+          <span className="text-xs text-[#FAF7F2]">Live</span>
         </div>
         <button
           onClick={onToggleVisualizer}
-          className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-500 transition-colors hover:text-gray-900"
+          className="inline-flex items-center gap-2 rounded-full border border-[#FAF7F2]/40 px-3 py-1 text-xs text-[#FAF7F2] transition-colors hover:border-[#FAF7F2]"
         >
           <Activity size={14} />
-          Show System Activity
+          <span className="hidden sm:inline">Show System Activity</span>
+          <span className="sm:hidden">Activity</span>
         </button>
       </div>
     </div>

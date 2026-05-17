@@ -3,17 +3,17 @@ import { useVigilStore } from '../../store/vigilStore';
 import type { Insight } from '../../store/vigilStore';
 
 const STATUS_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  strengthened: { bg: '#ecfdf5', color: '#10b981', border: '#10b981' },
-  weakened: { bg: '#fffbeb', color: '#f59e0b', border: '#f59e0b' },
-  contradicted: { bg: '#fef2f2', color: '#ef4444', border: '#ef4444' },
-  new: { bg: '#ffffff', color: '#10b981', border: '#10b981' },
-  unchanged: { bg: '#f9fafb', color: '#9ca3af', border: '#9ca3af' },
+  strengthened: { bg: '#F2F9E0', color: '#014421', border: '#D6E8B0' },
+  weakened: { bg: '#FFFBEB', color: '#B45309', border: '#F59E0B' },
+  contradicted: { bg: '#FEF2F2', color: '#EF4444', border: '#EF4444' },
+  new: { bg: '#F2F9E0', color: '#014421', border: '#D6E8B0' },
+  unchanged: { bg: '#F2F9E0', color: '#4A6741', border: '#D6E8B0' },
 };
 
 function confColor(c: number) {
-  if (c >= 0.7) return '#10b981';
-  if (c >= 0.4) return '#f59e0b';
-  return '#ef4444';
+  if (c >= 0.7) return '#014421';
+  if (c >= 0.4) return '#B45309';
+  return '#EF4444';
 }
 
 function timeAgo(iso: string) {
@@ -30,11 +30,11 @@ export default function InsightCard({ insight }: { insight: Insight }) {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-emerald-500 transition-colors"
+      className="cursor-pointer rounded-xl border border-[#D6E8B0] bg-[#F2F9E0] p-4 transition-colors hover:border-[#014421]"
       onClick={() => openReasoningDrawer(insight, 'insight')}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-semibold text-gray-900 text-sm leading-snug flex-1">{insight.title}</h3>
+        <h3 className="flex-1 text-sm font-semibold leading-snug text-[#012B15]">{insight.title}</h3>
         <span
           className="text-xs px-2 py-0.5 rounded border shrink-0"
           style={{ background: st.bg, color: st.color, borderColor: st.border }}
@@ -43,13 +43,13 @@ export default function InsightCard({ insight }: { insight: Insight }) {
         </span>
       </div>
 
-      <p className="text-gray-500 text-xs leading-relaxed line-clamp-3 mb-3">{insight.body}</p>
+      <p className="mb-3 line-clamp-3 text-xs leading-relaxed text-[#4A6741]">{insight.body}</p>
 
       <div className="mb-1 flex justify-between">
-        <span className="text-gray-500 text-xs">Confidence</span>
-        <span className="text-gray-900 text-xs">{Math.round(insight.confidence * 100)}%</span>
+        <span className="text-xs text-[#4A6741]">Confidence</span>
+        <span className="text-xs text-[#012B15]">{Math.round(insight.confidence * 100)}%</span>
       </div>
-      <div className="h-1.5 bg-[#e5e7eb] rounded-full overflow-hidden mb-3">
+      <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-[#D6E8B0]">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{ width: `${Math.round(insight.confidence * 100)}%`, background: confColor(insight.confidence) }}
@@ -58,12 +58,12 @@ export default function InsightCard({ insight }: { insight: Insight }) {
 
       {insight.flags_for_human_review && (
         <div className="flex items-center gap-1 mb-2">
-          <AlertTriangle size={12} color="#f59e0b" />
-          <span className="text-[#f59e0b] text-xs">{insight.flag_reason ?? 'Review Recommended'}</span>
+          <AlertTriangle size={12} className="text-[#B45309]" />
+          <span className="text-xs text-[#B45309]">{insight.flag_reason ?? 'Review Recommended'}</span>
         </div>
       )}
 
-      <p className="text-gray-400 text-xs">Updated {timeAgo(insight.last_updated)}</p>
+      <p className="text-xs text-[#4A6741]/75">Updated {timeAgo(insight.last_updated)}</p>
     </div>
   );
 }

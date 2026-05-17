@@ -14,9 +14,9 @@ function isKnownInsight(value: Insight | undefined): value is Insight {
   return Boolean(value);
 }
 
-function Bar({ value, color = '#10b981' }: { value: number; color?: string }) {
+function Bar({ value, color = '#014421' }: { value: number; color?: string }) {
   return (
-    <div className="flex-1 h-1.5 bg-[#e5e7eb] rounded-full overflow-hidden">
+    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#D6E8B0]">
       <div className="h-full rounded-full" style={{ width: `${Math.round(value * 100)}%`, background: color }} />
     </div>
   );
@@ -26,13 +26,13 @@ function Step({ icon, label, children }: { icon: React.ReactNode; label: string;
   return (
     <div className="flex gap-3">
       <div className="flex flex-col items-center">
-        <div className="w-7 h-7 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#D6E8B0] bg-[#F2F9E0]">
           {icon}
         </div>
-        <div className="w-px flex-1 bg-[#e5e7eb] mt-1" />
+        <div className="mt-1 w-px flex-1 bg-[#D6E8B0]" />
       </div>
       <div className="pb-5 flex-1 min-w-0">
-        <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+        <p className="mb-1 text-xs uppercase tracking-wider text-[#4A6741]">{label}</p>
         {children}
       </div>
     </div>
@@ -61,13 +61,13 @@ export default function ReasoningDrawer() {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/50" onClick={closeReasoningDrawer} />
-      <div className="relative w-96 h-full bg-white border-l border-gray-200 flex flex-col overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0">
-          <h2 className="text-gray-900 font-semibold text-sm flex-1 mr-4 line-clamp-2">
+      <div className="absolute inset-0 bg-black/30" onClick={closeReasoningDrawer} />
+      <div className="relative flex h-full w-96 flex-col overflow-hidden border-l-4 border-[#014421] bg-[#FFFFFF]">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#D6E8B0] px-6 py-4">
+          <h2 className="mr-4 line-clamp-2 flex-1 font-display text-xl font-bold text-[#012B15]">
             {isInsight(content) ? content.title : content.title}
           </h2>
-          <button onClick={closeReasoningDrawer} className="text-gray-500 hover:text-gray-900 transition-colors shrink-0">
+          <button onClick={closeReasoningDrawer} className="shrink-0 text-[#4A6741] transition-colors hover:text-[#012B15]">
             <X size={18} />
           </button>
         </div>
@@ -75,50 +75,50 @@ export default function ReasoningDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-5">
           {type === 'insight' && isInsight(content) && (
             <>
-              <Step icon={<GitBranch size={13} color="#10b981" />} label="Market evidence">
+              <Step icon={<GitBranch size={13} className="text-[#014421]" />} label="Market evidence">
                 {supportedSignals.length === 0 ? (
-                    <p className="text-sm leading-6 text-gray-500">
+                    <p className="text-sm leading-6 text-[#4A6741]">
                       No live market signal supports this belief. It is based on structured low-evidence reasoning.
                     </p>
                   ) : (
                     <div className="space-y-2">
                       {supportedSignals.map((signal) => (
-                        <div key={signal.id} className="rounded-lg border border-gray-200 bg-gray-50 p-2">
-                          <p className="text-xs leading-5 text-gray-900">{signal.raw_summary}</p>
-                          <p className="mt-1 text-xs text-gray-500">{signal.source_name}</p>
+                        <div key={signal.id} className="rounded-lg border border-[#D6E8B0] bg-[#F2F9E0] p-2">
+                          <p className="text-xs leading-5 text-[#012B15]">{signal.raw_summary}</p>
+                          <p className="mt-1 text-xs text-[#4A6741]">{signal.source_name}</p>
                         </div>
                       ))}
                     </div>
                   )}
               </Step>
 
-              <Step icon={<ShieldCheck size={13} color="#10b981" />} label="Evidence strength">
+              <Step icon={<ShieldCheck size={13} className="text-[#014421]" />} label="Evidence strength">
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-gray-500 w-20">Confidence</span>
+                  <span className="w-20 text-xs text-[#4A6741]">Confidence</span>
                   <Bar value={content.confidence} />
-                  <span className="text-xs text-gray-900">{Math.round(content.confidence * 100)}%</span>
+                  <span className="text-xs text-[#012B15]">{Math.round(content.confidence * 100)}%</span>
                 </div>
               </Step>
 
-              <Step icon={<BarChart2 size={13} color="#f59e0b" />} label="Belief formed">
-                <p className="text-sm text-gray-900 mb-2">{content.body}</p>
+              <Step icon={<BarChart2 size={13} className="text-[#B45309]" />} label="Belief formed">
+                <p className="mb-2 text-sm text-[#012B15]">{content.body}</p>
                 <div className="flex items-center gap-1">
                   {content.confidence_delta >= 0
-                    ? <TrendingUp size={13} color="#10b981" />
-                    : <TrendingDown size={13} color="#ef4444" />}
-                  <span className="text-xs" style={{ color: content.confidence_delta >= 0 ? '#10b981' : '#ef4444' }}>
+                    ? <TrendingUp size={13} className="text-[#014421]" />
+                    : <TrendingDown size={13} className="text-[#EF4444]" />}
+                  <span className="text-xs" style={{ color: content.confidence_delta >= 0 ? '#014421' : '#EF4444' }}>
                     {content.confidence_delta >= 0 ? '+' : ''}{(content.confidence_delta * 100).toFixed(0)}% confidence delta
                   </span>
                 </div>
               </Step>
 
-              <Step icon={<AlertTriangle size={13} color="#f59e0b" />} label="Assumptions affected">
+              <Step icon={<AlertTriangle size={13} className="text-[#B45309]" />} label="Assumptions affected">
                 {content.assumptions_affected.length === 0
-                  ? <p className="text-xs text-gray-500">None identified</p>
+                  ? <p className="text-xs text-[#4A6741]">None identified</p>
                   : (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {content.assumptions_affected.map((a) => (
-                        <span key={a} className="px-2 py-0.5 bg-gray-50 border border-gray-200 rounded text-xs text-gray-500">
+                        <span key={a} className="rounded-full border border-[#D6E8B0] bg-[#F2F9E0] px-2 py-0.5 text-xs text-[#4A6741]">
                           {a.replace(/_/g, ' ')}
                         </span>
                       ))}
@@ -128,47 +128,47 @@ export default function ReasoningDrawer() {
 
               <div className="flex items-center gap-2 mt-1">
                 {content.flags_for_human_review
-                  ? <><AlertTriangle size={13} color="#f59e0b" /><span className="text-xs text-[#f59e0b]">{content.flag_reason ?? 'Review recommended'}</span></>
-                  : <><CheckCircle size={13} color="#10b981" /><span className="text-xs text-emerald-600">No review required</span></>}
+                  ? <><AlertTriangle size={13} className="text-[#B45309]" /><span className="text-xs text-[#B45309]">{content.flag_reason ?? 'Review recommended'}</span></>
+                  : <><CheckCircle size={13} className="text-[#014421]" /><span className="text-xs text-[#014421]">No review required</span></>}
               </div>
             </>
           )}
 
           {type === 'recommendation' && !isInsight(content) && (
             <>
-              <div className="bg-gray-50 rounded-xl px-4 py-3 mb-4">
-                <p className="text-sm text-gray-900">{content.action}</p>
+              <div className="mb-4 rounded-xl bg-[#F2F9E0] px-4 py-3">
+                <p className="text-sm text-[#4A6741]">{content.action}</p>
               </div>
-              <p className="text-xs text-gray-500 mb-4 leading-relaxed">{content.rationale}</p>
+              <p className="mb-4 text-xs leading-relaxed text-[#4A6741]">{content.rationale}</p>
 
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Supporting beliefs</p>
+              <p className="mb-2 text-xs uppercase tracking-wider text-[#4A6741]">Supporting beliefs</p>
               <div className="space-y-2 mb-4">
                 {supportingBeliefs.map((insight) => (
-                  <div key={insight.id} className="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                    <p className="mb-1 text-xs font-semibold text-gray-900">{insight.title}</p>
-                    <p className="text-xs leading-5 text-gray-500">{insight.body}</p>
+                  <div key={insight.id} className="rounded-lg border border-[#D6E8B0] bg-[#F2F9E0] p-3">
+                    <p className="mb-1 text-xs font-semibold text-[#012B15]">{insight.title}</p>
+                    <p className="text-xs leading-5 text-[#4A6741]">{insight.body}</p>
                   </div>
                 ))}
                 {supportingBeliefs.length === 0 && (
-                  <p className="text-xs leading-5 text-gray-500">No supporting belief details are available for this action.</p>
+                  <p className="text-xs leading-5 text-[#4A6741]">No supporting belief details are available for this action.</p>
                 )}
               </div>
 
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Assumptions</p>
+              <p className="mb-2 text-xs uppercase tracking-wider text-[#4A6741]">Assumptions</p>
               <div className="space-y-1 mb-4">
                 {content.assumptions.map((a, i) => (
                   <div key={i} className="flex items-start gap-1.5">
-                    <CheckCircle size={11} color="#10b981" className="mt-0.5 shrink-0" />
-                    <span className="text-xs text-gray-900">{a}</span>
+                    <CheckCircle size={11} className="mt-0.5 shrink-0 text-[#014421]" />
+                    <span className="text-xs text-[#012B15]">{a}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-red-50 border border-red-500 rounded-xl p-3 flex items-start gap-2">
-                <AlertTriangle size={13} color="#ef4444" className="shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 rounded-xl border border-[#EF4444] bg-[#FEF2F2] p-3">
+                <AlertTriangle size={13} className="mt-0.5 shrink-0 text-[#EF4444]" />
                 <div>
-                  <p className="text-xs text-red-600 font-semibold mb-1">Risk</p>
-                  <p className="text-xs text-gray-900">{content.risk}</p>
+                  <p className="mb-1 text-xs font-semibold text-[#EF4444]">Risk</p>
+                  <p className="text-xs text-[#012B15]">{content.risk}</p>
                 </div>
               </div>
             </>

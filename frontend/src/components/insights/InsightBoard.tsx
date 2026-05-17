@@ -6,9 +6,9 @@ export default function InsightBoard() {
 
   if (insights.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 gap-3">
-        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-gray-500 text-sm">Waiting for key beliefs</span>
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-[#014421]" />
+        <span className="text-sm text-[#4A6741]">Waiting for key beliefs</span>
       </div>
     );
   }

@@ -13,8 +13,8 @@ export default function SidePanel({ isOpen, onToggle }: Props) {
 
   if (!isOpen) {
     return (
-      <div className="w-10 shrink-0 bg-white border-r border-gray-200 flex flex-col items-center pt-3">
-        <button onClick={onToggle} className="text-gray-500 hover:text-gray-900 transition-colors">
+      <div className="flex w-10 shrink-0 flex-col items-center border-r border-[#D6E8B0] bg-[#F2F9E0] pt-3">
+        <button onClick={onToggle} className="text-[#4A6741] transition-colors hover:text-[#012B15]">
           <ChevronRight size={16} />
         </button>
       </div>
@@ -22,23 +22,23 @@ export default function SidePanel({ isOpen, onToggle }: Props) {
   }
 
   return (
-    <aside className="w-80 shrink-0 bg-white border-l border-gray-200 flex flex-col min-h-0">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+    <aside className="flex min-h-0 w-80 shrink-0 flex-col border-l border-[#D6E8B0] bg-[#F2F9E0]">
+      <div className="flex shrink-0 items-center justify-between border-b border-[#D6E8B0] px-4 py-3">
         <div className="flex items-center gap-2">
-          <Radio size={14} color="#10b981" />
-          <span className="font-semibold text-sm text-gray-900">Market Signals</span>
-          <span className="text-gray-500 text-xs">({liveSignals.length})</span>
+          <Radio size={14} className="text-[#014421]" />
+          <span className="text-sm font-semibold text-[#012B15]">Market Signals</span>
+          <span className="text-xs text-[#4A6741]">({liveSignals.length})</span>
         </div>
-        <button onClick={onToggle} className="text-gray-500 hover:text-gray-900 transition-colors">
+        <button onClick={onToggle} className="text-[#4A6741] transition-colors hover:text-[#012B15]">
           <ChevronRight size={16} />
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto divide-y divide-[#e5e7eb]">
+      <div className="flex-1 divide-y divide-[#D6E8B0] overflow-y-auto">
         {liveSignals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-40 gap-2 px-5 text-center">
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
-            <span className="text-gray-900 text-sm font-medium">No live market signals accepted</span>
-            <span className="text-gray-500 text-xs leading-5">
+          <div className="flex h-40 flex-col items-center justify-center gap-2 px-5 text-center">
+            <span className="h-2 w-2 rounded-full bg-amber-400" />
+            <span className="text-sm font-medium text-[#012B15]">No live market signals accepted</span>
+            <span className="text-xs leading-5 text-[#4A6741]">
               Vigil filtered out weak or off-domain results. The current answer is using structured reasoning, not live news evidence.
             </span>
           </div>
