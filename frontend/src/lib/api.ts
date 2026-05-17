@@ -1,6 +1,7 @@
 import type { Signal, Insight, MissionQuality, Recommendation, SimulationOutput } from '../store/vigilStore';
 
-export const API_BASE = 'http://127.0.0.1:8000';
+const rawBase = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+export const API_BASE = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, options);
