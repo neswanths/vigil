@@ -1,4 +1,5 @@
 import logging
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,9 +29,23 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+origins = [
+    "https://vigil-amin.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+]
+if allowed_origins_env:
+    # also support adding extra origins via ALLOWED_ORIGINS env variable
+    origins.extend([o.strip() for o in allowed_origins_env.split(",") if o.strip()])
+
+# remove any trailing slashes from origins as per fetch specs
+origins = [o.rstrip("/") for o in origins]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
